@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CreativeNav - 创意导航</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    #particleCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    .header {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    :root {
+      /* Colors & Gradients */
+      --main-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      --primary-start: #6a11cb;
+      --primary-end: #2575fc;
+      --text-light: #fff;
+      --text-dark: #1a1a2e;
+      --bg-light: #f9fafb;
+      --card-bg-light: #fff;
+      --border-light: #e8ecf7;
+      --text-dark-theme: #e8eaf6;
+      --bg-dark: #12121f;
+      --card-bg-dark: #1e1e38;
+      --border-dark: #333352;
+      --icon-bg-color: #6a11cb;
+
+
+      /* Shadows */
+      --shadow-light: 0 4px 10px rgba(106, 130, 251, 0.06), 0 1px 3px rgba(106, 130, 251, 0.05);
+      --shadow-hover-light: 0 7px 18px rgba(106, 130, 251, 0.09), 0 3px 8px rgba(106, 130, 251, 0.07);
+      --shadow-dark: 0 5px 15px rgba(0, 0, 0, 0.18);
+      --shadow-hover-dark: 0 9px 25px rgba(0, 0, 0, 0.25);
+
+      /* Sizing & Radius */
+      --card-radius: 12px;
+      --nav-radius: 90px;
+      --button-radius: 8px;
+      --btt-radius: 50%;
+
+      /* Transitions */
+      --transition-fast: 0.2s ease-out;
+      --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --transition-slow: 0.4s ease;
+
+      /* Layout */
+      --max-width: 1140px;
+    }
+
+    body {
+
+      --text-color: var(--text-dark);
+      --bg-color: var(--bg-light);
+      --card-bg: var(--card-bg-light);
+      --nav-bg: rgba(255, 255, 255, 0.88);
+      --nav-border-color: var(--border-light);
+      --card-border-color: var(--border-light);
+      --shadow: var(--shadow-light);
+      --shadow-hover: var(--shadow-hover-light);
+
+      --search-bg: rgba(255, 255, 255, 0.15);
+      --search-border: transparent;
+      --search-focus-border: var(--text-light);
+      --search-icon-color: rgba(255, 255, 255, 0.65);
+      --search-focus-border-rgb: 255, 255, 255;
+
+      --nav-button-color: #525f7f;
+      --nav-button-hover-bg: rgba(106, 130, 251, 0.07);
+      --nav-button-hover-text: var(--primary-start);
+      --nav-button-active-text: var(--text-light);
+
+      --category-title-color: var(--text-dark);
+      --category-title-hover-color: var(--primary-start);
+      --card-title-color: var(--text-dark);
+      --card-hover-border-color: var(--primary-start);
+      --card-hover-bg-tint: rgba(106, 130, 251, 0.02);
+      --primary-start-rgb: 106, 130, 251;
+      --rgb-primary-end: 252, 92, 125;
+      --radial-gradient-color: rgba(106, 130, 251, 0.06);
+
+      --footer-text-color: #5a647e;
+      --footer-icon-color: #8898aa;
+      --footer-icon-hover-color: var(--primary-end);
+      --btt-bg: rgba(106, 130, 251, 0.85);
+      --btt-hover-bg: rgba(106, 130, 251, 1);
+      --btt-color: var(--text-light);
+      --btt-shadow: 0 4px 12px rgba(106, 130, 251, 0.3);
+    }
+
+    body.dark {
+      --text-color: var(--text-dark-theme);
+      --bg-color: var(--bg-dark);
+      --card-bg: var(--card-bg-dark);
+      --nav-bg: rgba(30, 30, 56, 0.88);
+      --nav-border-color: var(--border-dark);
+      --card-border-color: var(--border-dark);
+      --shadow: var(--shadow-dark);
+      --shadow-hover: var(--shadow-hover-dark);
+
+      --search-bg: rgba(255, 255, 255, 0.07);
+      --search-focus-border: var(--primary-end);
+      --search-icon-color: rgba(232, 234, 246, 0.65);
+      --search-focus-border-rgb: 252, 92, 125;
+
+      --nav-button-color: #a5b4fc;
+      --nav-button-hover-bg: rgba(165, 180, 252, 0.1);
+      --nav-button-hover-text: #c7d2fe;
+
+      --category-title-color: var(--text-dark-theme);
+      --category-title-hover-color: #a5b4fc;
+      --card-title-color: var(--text-dark-theme);
+      --card-hover-border-color: var(--primary-end);
+      --card-hover-bg-tint: rgba(255, 170, 184, 0.025);
+      --primary-start-rgb: 165, 180, 252;
+      --rgb-primary-end: 255, 170, 184;
+      --radial-gradient-color: rgba(252, 92, 125, 0.08);
+
+      --footer-text-color: rgba(232, 234, 246, 0.8);
+      --footer-icon-color: rgba(232, 234, 246, 0.7);
+      --btt-bg: rgba(252, 92, 125, 0.8);
+      --btt-hover-bg: rgba(252, 92, 125, 1);
+      --btt-color: var(--text-dark);
+      --btt-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Poppins", "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+      margin: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: background-color var(--transition-medium), color var(--transition-medium);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+
+    .header {
+      padding: 16px 0 10px 0;
+      color: var(--text-light);
+      position: relative;
+      overflow: hidden;
+      background: var(--main-gradient);
+      background-size: 200% 200%;
+      animation: gradientBGHeader 12s ease infinite;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+      z-index: 0;
+    }
+
+    .header .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes gradientBGHeader {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+
+    .logo {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: var(--text-light);
+      margin-bottom: 1px;
+      position: relative;
+      display: inline-block;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transform: translateZ(0);
+    }
+
+    .logo::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      left: 0;
+      bottom: 4px;
+      filter: blur(8px);
+      z-index: -1;
+      border-radius: 50%;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      opacity: 0.9;
+      margin: 0 auto 7px;
+      max-width: 560px;
+      line-height: 1.4;
+      letter-spacing: 0.3px;
+    }
+
+
+    .top-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      padding: 0 10px;
+      margin-bottom: 2px;
+    }
+
+
+    .theme-toggle {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: var(--text-light);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      backdrop-filter: blur(8px);
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.22);
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .theme-toggle i {
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .theme-toggle.changing i {
+      transform: rotate(180deg);
+    }
+
+
+    .search-bar {
+      position: relative;
+      width: 100%;
+      max-width: 240px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 9px 16px 9px 38px;
+      border-radius: var(--nav-radius);
+      border: 1px solid var(--search-border);
+      background-color: var(--search-bg);
+      font-size: 0.85rem;
+      font-family: inherit;
+      color: var(--text-light);
+      outline: none;
+      transition: all var(--transition-medium);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+      backdrop-filter: blur(8px);
+    }
+
+    .search-bar input::placeholder {
+      color: rgba(255, 255, 255, 0.75);
+      opacity: 1;
+    }
+
+    body.dark .search-bar input::placeholder {
+      color: rgba(232, 234, 246, 0.7);
+    }
+
+    .search-bar input:focus {
+      border-color: var(--search-focus-border);
+      box-shadow: 0 0 0 3px rgba(var(--search-focus-border-rgb), 0.35);
+      background-color: rgba(255, 255, 255, 0.22);
+    }
+
+    body.dark .search-bar input:focus {
+      background-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 3px rgba(var(--search-focus-border-rgb), 0.45);
+    }
+
+    .search-bar .fa-search {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--search-icon-color);
+      font-size: 0.9rem;
+      pointer-events: none;
+      transition: color 0.2s ease;
+    }
+
+    .search-bar input:focus+.fa-search {
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    body.dark .search-bar input:focus+.fa-search {
+      color: rgba(232, 234, 246, 0.95);
+    }
+
+
+    .nav-wrapper {
+      position: sticky;
+      top: 8px;
+      z-index: 100;
+      padding: 0 12px;
+      margin-bottom: 20px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background: var(--nav-bg);
+      border-radius: var(--nav-radius);
+      box-shadow: 0 3px 12px rgba(100, 110, 140, 0.06);
+      border: 1px solid var(--nav-border-color);
+      overflow-x: auto;
+      padding: 4px;
+      gap: 3px;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all var(--transition-medium);
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .navbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    body.dark .navbar {
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+    }
+
+
+    .navbar button {
+      background: transparent;
+      border: none;
+      color: var(--nav-button-color);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: var(--nav-radius);
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition-medium);
+      background-image: linear-gradient(90deg, transparent 40%, var(--nav-button-hover-bg) 160%);
+      background-size: 220% 100%;
+      background-position: 100% 0;
+    }
+
+
+    .navbar button::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+      transform: scale(0);
+      opacity: 0;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+      pointer-events: none;
+    }
+
+    .navbar button:active::after {
+      transform: scale(1);
+      opacity: 1;
+      transition: none;
+    }
+
+    body.dark .navbar button::after {
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+    }
+
+
+    .navbar button:not(.active):hover {
+      background-position: 0 0;
+      color: var(--nav-button-hover-text);
+      transform: translateY(-1px);
+    }
+
+    .navbar button:not(:hover) {
+      background-position: 100% 0;
+    }
+
+
+    .navbar button.active {
+      background: var(--main-gradient);
+      color: var(--nav-button-active-text);
+      box-shadow: 0 4px 10px rgba(var(--primary-start-rgb), 0.2), 0 1px 3px rgba(var(--primary-start-rgb), 0.08);
+      transform: translateY(0) scale(1.01);
+    }
+
+    body.dark .navbar button.active {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+
+    body:not(.dark) .navbar button.active {
+      color: var(--text-light);
+    }
+
+
+    .navbar button i {
+      font-size: 1em;
+      transition: transform 0.3s ease-out;
+      z-index: 1;
+    }
+
+    .navbar button span {
+      z-index: 1;
+      margin-left: 0.1em;
+      display: inline-block;
+    }
+
+    .navbar button.active i {
+      transform: scale(1.05);
+    }
+
+    .main {
+      flex-grow: 1;
+    }
+
+    .category {
+      margin-bottom: 24px;
+      transition: opacity 0.3s ease, height 0.3s ease, margin-bottom 0.3s ease,
+        visibility 0s ease 0.3s;
+    }
+
+    .category.hidden {
+      opacity: 0;
+      pointer-events: none;
+      height: 0;
+      margin-bottom: 0;
+      overflow: hidden;
+      visibility: hidden;
+    }
+
+    .category-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--category-title-color);
+      margin-bottom: 14px;
+      padding-left: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      cursor: default;
+      transition: color var(--transition-medium);
+      border-left: 2px solid var(--primary-start);
+    }
+
+    body.dark .category-title {
+      border-left-color: #a5b4fc;
+    }
+
+    .category-title:hover {
+      color: var(--category-title-hover-color);
+    }
+
+    .category-title i {
+      color: var(--primary-start);
+      font-size: 1em;
+      transition: color var(--transition-medium),
+        transform var(--transition-bounce);
+    }
+
+    .category-title:hover i {
+      transform: translateY(-2px);
+    }
+
+    body.dark .category-title i {
+      color: #a5b4fc;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .resource-card {
+      position: relative;
+      background-color: var(--card-bg);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow);
+      padding: 14px 6px 10px;
+      border: 1px solid var(--card-border-color);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow var(--transition-medium),
+        background-color var(--transition-medium),
+        border-color var(--transition-medium);
+      cursor: pointer;
+      overflow: hidden;
+      height: 130px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .resource-card.featured {
+      animation: glowBorder 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowBorder {
+      0% {
+        box-shadow: 0 0 4px rgba(var(--primary-start-rgb), 0.4),
+          inset 0 0 4px rgba(var(--primary-start-rgb), 0.25);
+      }
+
+      100% {
+        box-shadow: 0 0 16px rgba(var(--primary-start-rgb), 0.7),
+          inset 0 0 8px rgba(var(--primary-start-rgb), 0.4);
+      }
+    }
+
+    body.dark .resource-card.featured {
+      animation: glowBorderDark 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowBorderDark {
+      0% {
+        box-shadow: 0 0 6px rgba(var(--rgb-primary-end), 0.5),
+          inset 0 0 6px rgba(var(--rgb-primary-end), 0.3);
+      }
+
+      100% {
+        box-shadow: 0 0 20px rgba(var(--rgb-primary-end), 0.8),
+          inset 0 0 12px rgba(var(--rgb-primary-end), 0.6);
+      }
+    }
+
+    .resource-card {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-4px) scale(1.01) rotateY(8deg) rotateX(4deg);
+      box-shadow: 0 12px 24px rgba(106, 130, 251, 0.2);
+      border-color: var(--card-hover-border-color);
+      background-color: var(--card-hover-bg-tint);
+      filter: drop-shadow(0 10px 12px rgba(106, 130, 251, 0.25));
+      transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1),
+        box-shadow 0.35s ease, filter 0.35s ease;
+    }
+
+    .resource-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.25) 0%,
+          rgba(255, 255, 255, 0) 50%);
+      transform: rotate(45deg) translateY(-100%);
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      z-index: 1;
+    }
+
+    .resource-card:hover::before {
+      transform: rotate(45deg) translateY(100%);
+    }
+
+    :root {
+      --icon-color: var(--primary-start);
+    }
+
+    .link-card h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 0;
+      color: var(--card-title-color);
+      transition: color var(--transition-medium);
+      line-height: 1.3;
+    }
+
+    .link-card {
+      position: relative;
+      background-color: var(--card-bg);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow);
+      padding: 14px 6px 10px;
+      border: 1px solid var(--card-border-color);
+      height: 130px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      margin-bottom: 15px;
+    }
+
+    .link-card a {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+    }
+
+    .link-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 12px 24px rgba(106, 130, 251, 0.2);
+      border-color: var(--card-hover-border-color);
+      background-color: var(--card-hover-bg-tint);
+    }
+
+    .link-card i {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: var(--icon-color);
+      transition: transform 0.3s ease;
+    }
+
+    .link-card:hover i {
+      transform: scale(1.1);
+    }
+
+    .link-card h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 0;
+      color: var(--card-title-color);
+      transition: color 0.3s ease;
+      line-height: 1.3;
+    }
+
+    .link-card.hidden-card {
+      display: none;
+    }
+
+    #noResults {
+      display: none;
+      text-align: center;
+      padding: 30px 15px;
+      color: var(--text-color);
+      opacity: 0.75;
+    }
+
+    #noResults h2 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+
+    #noResults p {
+      font-size: 0.9rem;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.4;
+    }
+
+    .footer {
+      padding: 20px 0 25px;
+      text-align: center;
+      margin-top: 25px;
+      position: relative;
+    }
+
+    .footer p {
+      color: var(--footer-text-color);
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .social-links a {
+      color: var(--footer-icon-color);
+      font-size: 1rem;
+      transition: color var(--transition-medium),
+        transform var(--transition-fast);
+    }
+
+    .social-links a:hover {
+      color: var(--footer-icon-hover-color);
+      transform: translateY(-2px);
+    }
+
+    .copyright {
+      font-size: 0.75rem;
+      color: var(--footer-text-color);
+      opacity: 0.8;
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 38px;
+      height: 38px;
+      border-radius: var(--btt-radius);
+      background-color: var(--btt-bg);
+      color: var(--btt-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(15px);
+      box-shadow: var(--btt-shadow);
+      z-index: 50;
+      transition: opacity var(--transition-medium),
+        transform var(--transition-medium),
+        background-color var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .back-to-top:hover {
+      background-color: var(--btt-hover-bg);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 14px 0 7px 0;
+      }
+
+      .logo {
+        font-size: 1.9rem;
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+        padding: 0 8px;
+      }
+
+      .resource-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 10px;
+      }
+
+      .nav-wrapper {
+        top: 5px;
+        margin-bottom: 16px;
+      }
+
+      .back-to-top {
+        bottom: 16px;
+        right: 16px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .header {
+        padding: 10px 0 5px 0;
+      }
+
+      .logo {
+        font-size: 1.4rem;
+      }
+
+      .subtitle {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        padding: 0 6px;
+      }
+
+      .resource-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 7px;
+      }
+
+      .category-title {
+        font-size: 1.15rem;
+        padding-left: 5px;
+        margin-bottom: 12px;
+      }
+
+      .navbar {
+        padding: 3px;
+        justify-content: flex-start;
+      }
+
+      .navbar button {
+        padding: 4px 9px;
+        height: 28px;
+        font-size: 0.75rem;
+        min-width: max-content;
+        gap: 3px;
+      }
+
+      .top-controls {
+        flex-direction: row;
+        width: 100%;
+        gap: 5px;
+        align-items: center;
+      }
+
+      .search-bar {
+        max-width: calc(100% - 36px);
+      }
+
+      .theme-toggle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+      }
+
+      .nav-wrapper {
+        margin-bottom: 10px;
+        padding: 0 6px;
+      }
+
+      .link-card i {
+        font-size: 1.6rem;
+        margin-bottom: 5px;
+      }
+
+      .link-card {
+        padding: 10px 3px 6px;
+        height: 115px;
+      }
+
+      .link-card h3 {
+        font-size: 0.75rem;
+        line-height: 1.2;
+      }
+
+      .badge {
+        font-size: 0.5rem;
+        padding: 1px 2px;
+      }
+
+      .category {
+        margin-bottom: 18px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .logo {
+        font-size: 1.25rem;
+      }
+
+      .subtitle {
+        font-size: 0.75rem;
+      }
+
+      .resource-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 5px;
+      }
+
+      .link-card {
+        height: 110px;
+      }
+
+      .navbar button {
+        padding: 3px 7px;
+        font-size: 0.7rem;
+        height: 26px;
+      }
+
+      .category-title {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+
+      .search-bar input {
+        padding: 7px 10px 7px 28px;
+        font-size: 0.75rem;
+      }
+
+      .search-bar .fa-search {
+        left: 8px;
+        font-size: 0.8rem;
+      }
+
+      .icon-container {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+      }
+
+      .container {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <canvas id="particleCanvas"></canvas>
+    <div class="container">
+      <h1 class="logo">CreativeNav</h1>
+      <p class="subtitle">发现和分享创意生产力工具，提升效率与灵感</p>
+      <div class="top-controls">
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="" autocomplete="off" />
+          <i class="fas fa-search"></i>
+        </div>
+        <button id="themeToggle" class="theme-toggle" aria-label="切换暗色模式">
+          <i class="fas fa-sun"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-wrapper">
+    <nav class="navbar" id="categoryNav">
+      <button class="active" data-category="all">
+        <i class="fas fa-home"></i>
+        <span>所有资源</span>
+      </button>
+      <button data-category="design">
+        <i class="fas fa-palette"></i>
+        <span>设计工具</span>
+      </button>
+      <button data-category="development">
+        <i class="fas fa-code"></i>
+        <span>开发资源</span>
+      </button>
+      <button data-category="ai">
+        <i class="fas fa-robot"></i>
+        <span>AI工具</span>
+      </button>
+      <button data-category="inspiration">
+        <i class="fas fa-lightbulb"></i>
+        <span>创意灵感</span>
+      </button>
+      <button data-category="productivity">
+        <i class="fas fa-tasks"></i>
+        <span>效率工具</span>
+      </button>
+    </nav>
+  </div>
+
+  <main class="main">
+    <div class="container">
+      <section id="design" class="category">
+        <h2 class="category-title">
+          <i class="fas fa-palette"></i>
+          设计工具
+        </h2>
+        <div class="resource-grid">
+          <div class="link-card" data-category="design">
+            <a href="https://figma.com" target="_blank"></a>
+            <i class="fab fa-figma"></i>
+            <h3>Figma</h3>
+          </div>
+          <div class="link-card" data-category="design">
+            <a href="https://canva.com" target="_blank"></a>
+            <i class="fas fa-palette"></i>
+            <h3>Canva</h3>
+          </div>
+          <div class="link-card" data-category="design">
+            <a href="https://www.adobe.com/products/xd.html" target="_blank"></a>
+            <i class="fab fa-adobe"></i>
+            <h3>Adobe XD</h3>
+          </div>
+          <div class="link-card" data-category="design">
+            <a href="https://www.sketch.com/" target="_blank"></a>
+            <i class="fas fa-pencil-ruler"></i>
+            <h3>Sketch</h3>
+          </div>
+          <div class="link-card" data-category="design">
+            <a href="https://www.framer.com/" target="_blank"></a>
+            <i class="fas fa-tasks"></i>
+            <h3>Framer</h3>
+          </div>
+          <div class="link-card" data-category="design">
+            <a href="https://www.adobe.com/products/photoshop.html" target="_blank"></a>
+            <i class="fas fa-image"></i>
+            <h3>Photoshop</h3>
+          </div>
+        </div>
+      </section>
+      <section id="productivity" class="category">
+        <h2 class="category-title">
+          <i class="fas fa-tasks"></i>
+          效率工具
+        </h2>
+        <div class="resource-grid">
+          <div class="link-card" data-category="productivity">
+            <a href="https://www.notion.so/" target="_blank"></a>
+            <i class="fas fa-sticky-note"></i>
+            <h3>Notion</h3>
+          </div>
+          <div class="link-card" data-category="productivity">
+            <a href="https://trello.com/" target="_blank"></a>
+            <i class="fab fa-trello"></i>
+            <h3>Trello</h3>
+          </div>
+          <div class="link-card" data-category="productivity">
+            <a href="https://todoist.com" target="_blank"></a>
+            <i class="fas fa-check-circle"></i>
+            <h3>Todoist</h3>
+          </div>
+          <div class="link-card" data-category="productivity">
+            <a href="https://calendly.com" target="_blank"></a>
+            <i class="fas fa-calendar-alt"></i>
+            <h3>Calendly</h3>
+          </div>
+          <div class="link-card" data-category="productivity">
+            <a href="https://evernote.com" target="_blank"></a>
+            <i class="fas fa-bookmark"></i>
+            <h3>Evernote</h3>
+          </div>
+          <div class="link-card" data-category="productivity">
+            <a href="https://slack.com" target="_blank"></a>
+            <i class="fab fa-slack"></i>
+            <h3>Slack</h3>
+          </div>
+        </div>
+      </section>
+      <section id="development" class="category">
+        <h2 class="category-title">
+          <i class="fas fa-code"></i>
+          开发资源
+        </h2>
+        <div class="resource-grid">
+          <div class="link-card" data-category="development">
+            <a href="https://github.com" target="_blank"></a>
+            <i class="fab fa-github"></i>
+            <h3>GitHub</h3>
+          </div>
+          <div class="link-card" data-category="development">
+            <a href="https://code.visualstudio.com/" target="_blank"></a>
+            <i class="fas fa-code"></i>
+            <h3>VS Code</h3>
+          </div>
+          <div class="link-card" data-category="development">
+            <a href="https://reactjs.org/" target="_blank"></a>
+            <i class="fab fa-react"></i>
+            <h3>React</h3>
+          </div>
+          <div class="link-card" data-category="development">
+            <a href="https://stackoverflow.com" target="_blank"></a>
+            <i class="fas fa-question"></i>
+            <h3>Stack Overflow</h3>
+          </div>
+          <div class="link-card" data-category="development">
+            <a href="https://nodejs.org" target="_blank"></a>
+            <i class="fab fa-node-js"></i>
+            <h3>Node.js</h3>
+          </div>
+          <div class="link-card" data-category="development">
+            <a href="https://codepen.io" target="_blank"></a>
+            <i class="fab fa-codepen"></i>
+            <h3>CodePen</h3>
+          </div>
+        </div>
+      </section>
+      <section id="ai" class="category">
+        <h2 class="category-title">
+          <i class="fas fa-robot"></i>
+          AI工具
+        </h2>
+        <div class="resource-grid">
+          <div class="link-card" data-category="ai">
+            <a href="https://chat.openai.com" target="_blank"></a>
+            <i class="fas fa-robot"></i>
+            <h3>ChatGPT</h3>
+          </div>
+          <div class="link-card" data-category="ai">
+            <a href="https://www.midjourney.com" target="_blank"></a>
+            <i class="fas fa-paint-brush"></i>
+            <h3>Midjourney</h3>
+          </div>
+          <div class="link-card" data-category="ai">
+            <a href="https://runwayml.com/" target="_blank"></a>
+            <i class="fas fa-film"></i>
+            <h3>Runway</h3>
+          </div>
+          <div class="link-card" data-category="ai">
+            <a href="https://www.jasper.ai/" target="_blank"></a>
+            <i class="fas fa-pen-fancy"></i>
+            <h3>Jasper AI</h3>
+          </div>
+          <div class="link-card" data-category="ai">
+            <a href="https://openai.com/dall-e-2" target="_blank"></a>
+            <i class="fas fa-image"></i>
+            <h3>Dall-E</h3>
+          </div>
+          <div class="link-card" data-category="ai">
+            <a href="https://www.anthropic.com/claude" target="_blank"></a>
+            <i class="fas fa-comment-dots"></i>
+            <h3>Claude AI</h3>
+          </div>
+        </div>
+      </section>
+      <section id="inspiration" class="category">
+        <h2 class="category-title">
+          <i class="fas fa-lightbulb"></i>
+          创意灵感
+        </h2>
+        <div class="resource-grid">
+          <div class="link-card" data-category="inspiration">
+            <a href="https://www.behance.net" target="_blank"></a>
+            <i class="fab fa-behance"></i>
+            <h3>Behance</h3>
+          </div>
+          <div class="link-card" data-category="inspiration">
+            <a href="https://dribbble.com" target="_blank"></a>
+            <i class="fab fa-dribbble"></i>
+            <h3>Dribbble</h3>
+          </div>
+          <div class="link-card" data-category="inspiration">
+            <a href="https://www.pinterest.com" target="_blank"></a>
+            <i class="fab fa-pinterest"></i>
+            <h3>Pinterest</h3>
+          </div>
+          <div class="link-card" data-category="inspiration">
+            <a href="https://www.awwwards.com" target="_blank"></a>
+            <i class="fas fa-trophy"></i>
+            <h3>Awwwards</h3>
+          </div>
+          <div class="link-card" data-category="inspiration">
+            <a href="https://muz.li/" target="_blank"></a>
+            <i class="fas fa-atom"></i>
+            <h3>Muzli</h3>
+          </div>
+          <div class="link-card" data-category="inspiration">
+            <a href="https://www.designspiration.com/" target="_blank"></a>
+            <i class="fas fa-eye"></i>
+            <h3>Designspiration</h3>
+          </div>
+        </div>
+      </section>
+      <section id="noResults" class="category">
+        <h2><i class="fas fa-search"></i> 未找到结果</h2>
+        <p>
+          抱歉，没有找到与您的搜索匹配的资源。请尝试使用不同的关键词，或浏览类别查找需要的工具。
+        </p>
+      </section>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <p>探索创意资源 · 提升工作效率 · 激发设计灵感</p>
+      <div class="social-links">
+        <a href="#" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" target="_blank" aria-label="Dribbble"><i class="fab fa-dribbble"></i></a>
+        <a href="#" target="_blank" aria-label="Product Hunt"><i class="fab fa-product-hunt"></i></a>
+      </div>
+      <p class="copyright">© 2025 CreativeNav. 保留所有权利。</p>
+    </div>
+  </footer>
+  <div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+
+  <script>
+    const body = document.body;
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = themeToggle.querySelector("i");
+    const categoryNav = document.getElementById("categoryNav");
+    const searchInput = document.getElementById("searchInput");
+    const categories = document.querySelectorAll(".category:not(#noResults)");
+    const linkCards = document.querySelectorAll(".link-card");
+    const noResults = document.getElementById("noResults");
+    const backToTop = document.getElementById("backToTop");
+
+    function initTheme() {
+      body.classList.add("dark");
+      themeIcon.classList.remove("fa-moon");
+      themeIcon.classList.add("fa-sun");
+      localStorage.setItem("theme", "dark");
+    }
+
+    themeToggle.addEventListener("click", () => {
+      themeToggle.classList.add("changing");
+
+      setTimeout(() => {
+        body.classList.toggle("dark");
+
+        if (body.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark");
+          themeIcon.classList.remove("fa-moon");
+          themeIcon.classList.add("fa-sun");
+        } else {
+          localStorage.setItem("theme", "light");
+          themeIcon.classList.remove("fa-sun");
+          themeIcon.classList.add("fa-moon");
+        }
+
+        setTimeout(() => {
+          themeToggle.classList.remove("changing");
+        }, 200);
+      }, 150);
+    });
+
+    categoryNav.addEventListener("click", (e) => {
+      const button = e.target.closest("button");
+      if (!button) return;
+
+      categoryNav.querySelectorAll("button").forEach((btn) => {
+        btn.classList.remove("active");
+      });
+      button.classList.add("active");
+
+      const category = button.dataset.category;
+      filterByCategory(category);
+    });
+
+    function filterByCategory(category) {
+      searchInput.value = "";
+
+      if (category === "all") {
+        categories.forEach((cat) => {
+          cat.classList.remove("hidden");
+        });
+
+        linkCards.forEach((card) => {
+          card.classList.remove("hidden-card");
+        });
+
+        noResults.style.display = "none";
+        return;
+      }
+
+      categories.forEach((cat) => {
+        if (cat.id === category) {
+          cat.classList.remove("hidden");
+        } else {
+          cat.classList.add("hidden");
+        }
+      });
+
+      let visibleCardCount = 0;
+      linkCards.forEach((card) => {
+        if (card.getAttribute('data-category') === category) {
+          card.classList.remove("hidden-card");
+          visibleCardCount++;
+        } else {
+          card.classList.add("hidden-card");
+        }
+      });
+
+      const hasVisibleCards = visibleCardCount > 0;
+      noResults.style.display = hasVisibleCards ? "none" : "block";
+    }
+
+    searchInput.addEventListener("input", () => {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+
+      categoryNav.querySelectorAll("button").forEach((btn) => {
+        btn.classList.remove("active");
+      });
+      categoryNav
+        .querySelector('[data-category="all"]')
+        .classList.add("active");
+
+      categories.forEach((cat) => {
+        cat.classList.remove("hidden");
+      });
+
+      if (searchTerm === "") {
+        linkCards.forEach((card) => {
+          card.classList.remove("hidden-card");
+        });
+        noResults.style.display = "none";
+        return;
+      }
+
+      let hasResults = false;
+
+      linkCards.forEach((card) => {
+        const title = card.querySelector("h3")?.textContent.toLowerCase() || '';
+
+        if (title.includes(searchTerm)) {
+          card.classList.remove("hidden-card");
+          hasResults = true;
+        } else {
+          card.classList.add("hidden-card");
+        }
+      });
+
+      categories.forEach((category) => {
+        if (category.id === "noResults") return;
+
+        const cards = category.querySelectorAll(".link-card");
+        let categoryHasVisibleCards = false;
+
+        cards.forEach((card) => {
+          if (!card.classList.contains("hidden-card")) {
+            categoryHasVisibleCards = true;
+          }
+        });
+
+        if (!categoryHasVisibleCards) {
+          category.classList.add("hidden");
+        }
+      });
+
+      noResults.style.display = hasResults ? "none" : "block";
+    });
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTop.classList.add("visible");
+      } else {
+        backToTop.classList.remove("visible");
+      }
+    });
+
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
+
+    initTheme();
+
+    const particleCanvas = document.getElementById("particleCanvas");
+    const ctx = particleCanvas.getContext("2d");
+    let particles = [];
+    const particleCount = 60;
+    const minRadius = 1, maxRadius = 3, maxSpeed = 0.5;
+
+    function initParticles() {
+      particles = [];
+      const width = (particleCanvas.width = window.innerWidth);
+      const height = (particleCanvas.height = document.querySelector(".header").offsetHeight);
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: minRadius + Math.random() * (maxRadius - minRadius),
+          speedX: (Math.random() - 0.5) * maxSpeed,
+          speedY: (Math.random() - 0.5) * maxSpeed,
+          color: body.classList.contains("dark") ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.2)",
+        });
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        if (p.x < 0 || p.x > particleCanvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > particleCanvas.height) p.speedY *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animateParticles);
+    }
+
+    function updateParticleColors() {
+      const newColor = body.classList.contains("dark") ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.2)";
+      particles.forEach(p => p.color = newColor);
+    }
+
+    window.addEventListener("load", () => { initParticles(); animateParticles(); });
+    window.addEventListener("resize", initParticles);
+    themeToggle.addEventListener("click", () => setTimeout(updateParticleColors, 300));
+  </script>
+</body>
+
+</html>
